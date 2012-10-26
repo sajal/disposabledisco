@@ -16,9 +16,11 @@ apt-get -y --force-yes install disco-master python-disco
 
 --PIP--
 
-#TODO: Run these as disco user
+#Run these as disco user
 su - disco -c "ssh-keygen -N '' -f ~/.ssh/id_dsa"
 su - disco -c "cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys"
+#Add management key so we can ssh in
+su - disco -c "echo \"--PUBKEY--\" >> ~/.ssh/authorized_keys"
 
 #accpet and add key
 su - disco -c "ssh -oStrictHostKeyChecking=no localhost uptime"
