@@ -1,6 +1,6 @@
 
 
-def make_init_script(config, script):
+def make_init_script(config, script, master_pub_key=None):
     APT_PACKAGES = config.get("BASE_PACKAGES", [])
     APT_PACKAGES += config.get("ADDITIONAL_PACKAGES", [])
 
@@ -14,4 +14,7 @@ def make_init_script(config, script):
 
     script = script.replace("--PIP--", pip)
     script = script.replace("--PUBKEY--", config.get("MGMT_KEY"))
+    if master_pub_key:
+        #Means we are launching a slave
+        script = script.replace("--MASTERPUBKEY--", master_pub_key)
     return script
