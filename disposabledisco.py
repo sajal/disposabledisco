@@ -160,6 +160,24 @@ class DisposableDisco():
         if instance:
             return instance.private_dns_name.split(".")[0]
 
+    def launch_slave(self, master_pub_key):
+        init_script = make_init_script(self.config, open("slave-init.sh", "r").read(), master_pub_key=master_pub_key)
+
+        sr = self.conn.request_spot_instances(
+            price=self.config["MAX_BID"],
+            image_id = self.config["AMI"],
+            count = 1,
+            type = 'one-time',
+            key_name= self.config["KEY_NAME"],
+            user_data = init_script,
+            instance_type = self.config.get("SLAVE_INSTANCE_TYPE", self.config["INSTANCE_TYPE"]),
+            security_groups = self.config["SECURITY_GROUPS"]
+        )
+        sp = sr[0]
+        sp.add_tag(self.config["TAG_KEY"], "slave")
+        #This sleep is intentional. Spot request api seems to be eventually consistent
+        sleep(15)
+        return sp, sp.tags
 
     def launch_slaves(self, count):
         """
@@ -168,24 +186,8 @@ class DisposableDisco():
         """
         master_pub_key = self.get_master_pub_key()
         if master_pub_key:
-            #Master is ready...
-            init_script = make_init_script(self.config, open("slave-init.sh", "r").read(), master_pub_key=master_pub_key)
-
-            sr = self.conn.request_spot_instances(
-                price=self.config["MAX_BID"],
-                image_id = self.config["AMI"],
-                count = count,
-                type = 'one-time',
-                key_name= self.config["KEY_NAME"],
-                user_data = init_script,
-                instance_type = self.config.get("SLAVE_INSTANCE_TYPE", self.config["INSTANCE_TYPE"]),
-                security_groups = self.config["SECURITY_GROUPS"]
-            )
-            sp = sr[0]
-            sp.add_tag(self.config["TAG_KEY"], "slave")
-            #This sleep is intentional. Spot request api seems to be eventually consistent
-            sleep(15)
-            return sp, sp.tags
+            for i in range(count):
+                self.launch_slave(master_pub_key)
         else:
             print "Master not ready yet..."
 
