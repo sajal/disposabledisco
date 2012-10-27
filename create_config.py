@@ -21,7 +21,8 @@ BASE_CONFIG = {
     "TAG_KEY": "disposabledisco",
     "NUM_SLAVES" : 0,
     "MASTER_MULTIPLIER": 1,
-    "SLAVE_MULTIPLIER": 1
+    "SLAVE_MULTIPLIER": 1,
+    "POST_INIT": ""
 }
 
 print json.dumps(BASE_CONFIG, indent=4)

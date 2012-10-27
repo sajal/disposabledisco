@@ -30,4 +30,6 @@ chown disco:disco /mnt/disco
 #Add Master's key so it can ssh in
 su - disco -c "echo \"--MASTERPUBKEY--\" >> ~/.ssh/authorized_keys"
 
-#status checks...
+#post init...
+
+--POST_INIT--
