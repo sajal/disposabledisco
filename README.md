@@ -65,3 +65,13 @@ Security Group
 
 1. Allow all udp, tcp traffic from within the group on all ports.
 2. Allow ssh from 0.0.0.0/0 ... or atleast from your workstation.
+
+
+TODO
+====
+
+1. Ability to select region. Currently it is hardcoded to default (us-east)
+2. Specify different instance types with counts for slaves.
+3. Ability to stop unresponsive slaves.
+4. Ability to scale down cluster based on config changes. It can already scale up.
+5. Make pip installable, so that we can install it globally, and keep config file inside relavent project directories.
